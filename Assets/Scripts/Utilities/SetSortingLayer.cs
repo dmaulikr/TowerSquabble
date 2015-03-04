@@ -10,21 +10,21 @@ public class SetSortingLayer : MonoBehaviour
 	void Start ()
 	{
 		// Set the sorting layer & order in layer of the particle system.
-		particleSystem.renderer.sortingLayerName = sortingLayerName;
-		particleSystem.renderer.sortingOrder = orderInLayer;
+		GetComponent<ParticleSystem>().GetComponent<Renderer>().sortingLayerName = sortingLayerName;
+		GetComponent<ParticleSystem>().GetComponent<Renderer>().sortingOrder = orderInLayer;
 
 		// Set it for all the children as well
 		ParticleSystem[] ps = gameObject.GetComponentsInChildren<ParticleSystem>();
 		for(int i = 0; i < ps.Length; ++i)
 		{
-			ps[i].renderer.sortingLayerName = sortingLayerName;
-			ps[i].renderer.sortingOrder = orderInLayer;
+			ps[i].GetComponent<Renderer>().sortingLayerName = sortingLayerName;
+			ps[i].GetComponent<Renderer>().sortingOrder = orderInLayer;
 		}
 
 		if(simulateTime > 0F)
 		{
-			particleSystem.Simulate(simulateTime);
-			particleSystem.Play();
+			GetComponent<ParticleSystem>().Simulate(simulateTime);
+			GetComponent<ParticleSystem>().Play();
 		}
 	}
 }

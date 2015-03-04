@@ -116,7 +116,7 @@ public class BuildingBlockButton : MonoBehaviour {
 		{
 			fingerPos = Input.mousePosition;
 		}
-		Vector3 relativePos = mainCamera.camera.ScreenToWorldPoint(fingerPos); // Get position relative to camera position											 	// Reset z position
+		Vector3 relativePos = mainCamera.GetComponent<Camera>().ScreenToWorldPoint(fingerPos); // Get position relative to camera position											 	// Reset z position
 		relativePos.z = -1;
 		relativePos.y += buildingBlockYPosOffset;
 		// Try to find building block prefab
@@ -146,7 +146,7 @@ public class BuildingBlockButton : MonoBehaviour {
 			{
 				fingerPos = Input.mousePosition;
 			}
-			Vector3 relativePos = mainCamera.camera.ScreenToWorldPoint(fingerPos); // Get position relative to camera position											 	// Reset z position
+			Vector3 relativePos = mainCamera.GetComponent<Camera>().ScreenToWorldPoint(fingerPos); // Get position relative to camera position											 	// Reset z position
 			relativePos.z = -1;
 			relativePos.y += buildingBlockYPosOffset;
 			buildingBlockInstance.transform.position = relativePos;

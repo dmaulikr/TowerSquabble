@@ -38,7 +38,7 @@ public class BuildingBlock : MonoBehaviour
 	{
 		SetGravityScale(1F);
 		Enable2DCollider(true);
-		flashingRing.renderer.enabled = false;
+		flashingRing.GetComponent<Renderer>().enabled = false;
 		if(transform.parent != null)
 		{
 			// Destroy hinge joint
@@ -70,13 +70,13 @@ public class BuildingBlock : MonoBehaviour
 	// Enable the 2D collider of this game object
 	void Enable2DCollider(bool enable)
 	{
-		gameObject.collider2D.enabled = enable;
+		gameObject.GetComponent<Collider2D>().enabled = enable;
 	}
 
 	// Set gravity scale of the 2D rigidbody
 	void SetGravityScale(float fValue)
 	{
-		gameObject.rigidbody2D.gravityScale = fValue;
+		gameObject.GetComponent<Rigidbody2D>().gravityScale = fValue;
 	}
 
 	public void DestroyToolObject()
@@ -88,7 +88,7 @@ public class BuildingBlock : MonoBehaviour
 	public void AddForceToTool(Vector2 V2ForceToAdd)
 	{
 		V2ForceToAdd.y = 0F;
-		gameObject.rigidbody2D.AddForce(V2ForceToAdd * 10F);
+		gameObject.GetComponent<Rigidbody2D>().AddForce(V2ForceToAdd * 10F);
 	}
 
 	// Make the building block swin back and forth using a hinge joint
@@ -166,13 +166,13 @@ public class BuildingBlock : MonoBehaviour
 		{
 			SetGravityScale(0F);
 			Enable2DCollider(false);
-			flashingRing.renderer.enabled = true;
+			flashingRing.GetComponent<Renderer>().enabled = true;
 			SetIsReleased(false);
 			
 			// Set color to white for flashing ring
 			Color whiteAlpha = Color.white;
 			whiteAlpha.a = .4F;
-			flashingRing.particleSystem.renderer.material.color = whiteAlpha;
+			flashingRing.GetComponent<ParticleSystem>().GetComponent<Renderer>().material.color = whiteAlpha;
 
 			if(shouldSwing)
 			{
@@ -202,9 +202,9 @@ public class BuildingBlock : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if(rigidbody2D.velocity.magnitude < .001f && rigidbody2D.angularVelocity < .001f && hasCollided)
+		if(GetComponent<Rigidbody2D>().velocity.magnitude < .001f && GetComponent<Rigidbody2D>().angularVelocity < .001f && hasCollided)
 		{
-			rigidbody2D.Sleep();
+			GetComponent<Rigidbody2D>().Sleep();
 		}
 	}
 
@@ -225,13 +225,13 @@ public class BuildingBlock : MonoBehaviour
 		{
 			Color colWhiteAlpha = Color.red;
 			colWhiteAlpha.a = .4F;
-			flashingRing.particleSystem.renderer.material.color = colWhiteAlpha;
+			flashingRing.GetComponent<ParticleSystem>().GetComponent<Renderer>().material.color = colWhiteAlpha;
 		} 
 		else 
 		{
 			Color colWhiteAlpha = Color.white;
 			colWhiteAlpha.a = .4F;
-			flashingRing.particleSystem.renderer.material.color = colWhiteAlpha;
+			flashingRing.GetComponent<ParticleSystem>().GetComponent<Renderer>().material.color = colWhiteAlpha;
 		}
 	}
 }
