@@ -139,6 +139,7 @@ MonoBehaviour:
   m_Placeholder: {fileID: 11426216}
   m_ContentType: 0
   m_InputType: 0
+  m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
   m_HideMobileInput: 0
@@ -265,4 +266,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 126214}
   m_IsPrefabParent: 1
-  m_IsExploded: 1

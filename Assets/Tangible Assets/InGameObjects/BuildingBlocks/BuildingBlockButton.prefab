@@ -31,6 +31,9 @@ GameObject:
   - 114: {fileID: 11453702}
   - 114: {fileID: 11453704}
   - 114: {fileID: 11453706}
+  - 114: {fileID: 11449940}
+  - 114: {fileID: 11473350}
+  - 114: {fileID: 11434374}
   m_Layer: 5
   m_Name: BuildingBlockButton
   m_TagString: Untagged
@@ -38,6 +41,35 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &11434374
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 153698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2066a1381b4c54f67ae8e1dd6bffe06c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  listOfBuildingBlocks: []
+  buildingBlockButtons: []
+--- !u!114 &11449940
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 153698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5ea7631502474d6d94ecde2a724e746, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+  buildingBlockYPosOffset: 0
+  buttonIndex: 0
+  spriteImage: {fileID: 0}
+  isUserInteractingWithButton: 0
 --- !u!114 &11453696
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -243,6 +275,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!114 &11473350
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 153698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d33d8c137064046358244772260bcbcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxNumberOfBuildingBlocksOnFloor: 3
 --- !u!222 &22253696
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -301,4 +345,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 153698}
   m_IsPrefabParent: 1
-  m_IsExploded: 1
