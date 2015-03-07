@@ -56,7 +56,6 @@ public class FriendHelper : MonoBehaviour {
 
 	public static IEnumerator AddFriend(string userName)
 	{
-		Debug.Log (userName);
 		ParseQuery<ParseUser> mainQuery = new ParseQuery<ParseUser> ("_User").WhereEqualTo ("username",userName);
 		var findUser = mainQuery.FindAsync ();	
 		while (!findUser.IsCompleted) yield return null;
@@ -64,7 +63,6 @@ public class FriendHelper : MonoBehaviour {
 		
 		foreach (ParseUser user in results) 
 		{
-			Debug.Log("found user, adding...");
 			ParseObject newFR = new ParseObject("FriendRelationship");
 			newFR["Player"] = ParseUser.CurrentUser;
 			newFR["Friend"] = user;

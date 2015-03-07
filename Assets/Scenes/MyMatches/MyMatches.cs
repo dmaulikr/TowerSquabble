@@ -177,6 +177,23 @@ public class MyMatches : MonoBehaviour {
 		//sort the results by status
 		results = results.Where(x => x["status"].ToString() == "waiting").Concat(results.Where(x => x["status"].ToString() == "active")).Concat(results.Where(x => x["status"].ToString() == "finished"));
 
+		//retrieve existing friends
+		List<string> existingFriends = new List<string>();
+		ParseQuery<ParseObject> friendsQuery = new ParseQuery<ParseObject>("FriendRelationship").Include("Friend").WhereEqualTo("Player", ParseUser.CurrentUser);
+		var findFriends = friendsQuery.FindAsync ();	
+		while (!findFriends.IsCompleted) yield return null;
+		if (findFriends.IsCanceled || findFriends.IsFaulted) {
+			Debug.Log(findFriends.Exception.InnerExceptions[0]);
+		}
+		else{
+			IEnumerable<ParseObject> friendResults = findFriends.Result;
+			foreach (ParseObject p in friendResults) 
+			{
+				ParseUser user = p["Friend"] as ParseUser;
+				existingFriends.Add(user["username"].ToString());
+			}
+		}
+
 		//remove all existing matchbuttons
 		GameObject[] matchButtons = GameObject.FindGameObjectsWithTag ("MatchButton");
 		foreach (GameObject g in matchButtons) 
@@ -209,18 +226,21 @@ public class MyMatches : MonoBehaviour {
 				opponentDisplayName = p["player1DisplayName"].ToString();
 			}
 
-			//Add friend button test
-			GameObject addFriendButtonInstance = Instantiate(AddFriendButton, new Vector3(455,initialY,0), transform.rotation) as GameObject;
-			addFriendButtonInstance.transform.SetParent(GameObject.Find ("Matches").transform, false);
-			addFriendButtonInstance.tag = "MatchButton";
+			//Add friend button
+			if(!existingFriends.Contains(opponentUserName))
+			{
+				GameObject addFriendButtonInstance = Instantiate(AddFriendButton, new Vector3(455,initialY,0), transform.rotation) as GameObject;
+				addFriendButtonInstance.transform.SetParent(GameObject.Find ("Matches").transform, false);
+				addFriendButtonInstance.tag = "MatchButton";
 
-			//Store oppponent on add friend button
-			AddFriendButtonScript afbs = addFriendButtonInstance.GetComponent<AddFriendButtonScript>(); 
-			afbs.userName = opponentUserName;
-			
-			//Add click event to add friend button
-			Button addFriendButton = addFriendButtonInstance.GetComponent<Button>();
-			addClickEvent(addFriendButton, "AddFriend");
+				//Store oppponent on add friend button
+				AddFriendButtonScript afbs = addFriendButtonInstance.GetComponent<AddFriendButtonScript>(); 
+				afbs.userName = opponentUserName;
+				
+				//Add click event to add friend button
+				Button addFriendButton = addFriendButtonInstance.GetComponent<Button>();
+				addClickEvent(addFriendButton, "AddFriend");
+			}
 
 			//Instantiate button
 			GameObject matchButtonInstance = Instantiate(MatchButton, new Vector3(0,initialY,0), transform.rotation) as GameObject;
@@ -294,5 +314,6 @@ public class MyMatches : MonoBehaviour {
 		AddFriendButtonScript afbs = b.GetComponent<AddFriendButtonScript> ();
 		string opponentUserName = afbs.userName;
 		FriendHelper.DoCoroutine(FriendHelper.AddFriend(opponentUserName));
+		b.gameObject.SetActive(false);
 	}
 }

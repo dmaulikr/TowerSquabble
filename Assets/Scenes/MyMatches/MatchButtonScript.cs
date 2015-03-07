@@ -7,4 +7,5 @@ public class MatchButtonScript : MonoBehaviour {
 	public string opponentUserName;
 	public string opponentDisplayName;
 	public ParseObject parseObject;
+	public ParseUser opponent;
 }
