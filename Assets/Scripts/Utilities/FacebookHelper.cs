@@ -45,7 +45,6 @@ public class FacebookHelper : MonoBehaviour {
 			else 
 			{
 				Debug.Log("Parse user is already logged in");
-				AppModel.currentUserName = ParseUser.CurrentUser.Username;
 				Application.LoadLevel("MyMatches");
 			}
 		} 

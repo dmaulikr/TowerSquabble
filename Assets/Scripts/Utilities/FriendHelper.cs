@@ -64,8 +64,8 @@ public class FriendHelper : MonoBehaviour {
 		foreach (ParseUser user in results) 
 		{
 			ParseObject newFR = new ParseObject("FriendRelationship");
-			newFR["Player"] = ParseUser.CurrentUser;
-			newFR["Friend"] = user;
+			newFR["player"] = ParseUser.CurrentUser;
+			newFR["friend"] = user;
 			var addFriend = newFR.SaveAsync();
 			while (!addFriend.IsCompleted) yield return null;
 			if(!addFriend.IsCanceled && !addFriend.IsFaulted)
@@ -81,7 +81,7 @@ public class FriendHelper : MonoBehaviour {
 
 	public static IEnumerator RetrieveFriends(){
 		//get count of matches waiting
-		ParseQuery<ParseObject> mainQuery = new ParseQuery<ParseObject> ("FriendRelationship").WhereEqualTo ("Player", ParseUser.CurrentUser);
+		ParseQuery<ParseObject> mainQuery = new ParseQuery<ParseObject> ("FriendRelationship").WhereEqualTo ("player", ParseUser.CurrentUser);
 		var find = mainQuery.FindAsync ();	
 		while (!find.IsCompleted) yield return null;
 		IEnumerable<ParseObject> results = find.Result;

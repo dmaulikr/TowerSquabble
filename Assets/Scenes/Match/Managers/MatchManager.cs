@@ -124,15 +124,16 @@ public class MatchManager : MonoBehaviour {
 		if(result != null)
 		{
 			// Check whos turn it is
-			if(AppModel.currentMatch ["turn"].ToString () != AppModel.currentUserName.ToString()) 
+			ParseUser playerTurn = AppModel.currentMatch["playerTurn"] as ParseUser;
+			if(!playerTurn.ObjectId.Equals(ParseUser.CurrentUser.ObjectId)) 
 			{
-				headerText.text = "Waiting for " + AppModel.currentOpponentDisplayName;
+				headerText.text = "Waiting for " + AppModel.currentOpponent["displayName"].ToString();
 				refreshImage.gameObject.SetActive(true);
 				refreshImage.transform.parent.gameObject.SetActive(true);
 			}
 			else
 			{
-				headerText.text = "Your turn against " + AppModel.currentOpponentDisplayName;
+				headerText.text = "Your turn against " + AppModel.currentOpponent["displayName"].ToString();
 				buildingBlockSlotMachine.GenerateNewBuildingBlocks();
 				refreshImage.gameObject.SetActive(false);
 				refreshImage.transform.parent.gameObject.SetActive(false);
@@ -223,12 +224,12 @@ public class MatchManager : MonoBehaviour {
 		}
 		
 		//change turn for the match object, then return to matches screen
-		AppModel.currentMatch ["turn"] = AppModel.currentOpponentUserName.ToString ();
+		AppModel.currentMatch ["playerTurn"] = AppModel.currentOpponent;
 		var updateTurn = AppModel.currentMatch.SaveAsync ();
 		while (!updateTurn.IsCompleted) yield return null;
 		if(!updateTurn.IsCanceled && !updateTurn.IsFaulted)
 		{
-			headerText.text = "Waiting for " + AppModel.currentOpponentDisplayName;
+			headerText.text = "Waiting for " + AppModel.currentOpponent["displayName"].ToString();
 			refreshImage.gameObject.SetActive(true);
 		}
 	}
@@ -285,11 +286,11 @@ public class MatchManager : MonoBehaviour {
 	IEnumerator EndGame()
 	{
 		AppModel.currentMatch["status"] = "finished";
-		AppModel.currentMatch["victor"] = AppModel.currentOpponentUserName;
+		AppModel.currentMatch["playerVictor"] = AppModel.currentOpponent;
 		var updateMatch = AppModel.currentMatch.SaveAsync();
 		while (!updateMatch.IsCompleted) yield return null;
 		if (!updateMatch.IsCanceled && !updateMatch.IsFaulted) {
-			Debug.Log("match ended successfully, victor is: " + AppModel.currentDisplayName);
+			Debug.Log("match ended successfully, victor is: " + AppModel.currentOpponent["displayName"].ToString());
 			headerText.text = "You lost, fuck off!";
 			//TODO: delete all building blocks with this matchId. probably need to use Parse Cloud job
 		}
