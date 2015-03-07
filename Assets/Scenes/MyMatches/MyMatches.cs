@@ -22,11 +22,11 @@ public class MyMatches : MonoBehaviour {
 	{
 		refreshing = true;
 
-		if (AppModel.currentUserName == null || AppModel.currentUserName.Length < 1)
+		if (ParseUser.CurrentUser == null)
 			Application.LoadLevel ("Login");
 
 		userText = GameObject.Find ("WelcomeText").GetComponent<Text> ();
-		userText.text = "WELCOME " + AppModel.currentDisplayName.ToUpper();
+		userText.text = "WELCOME " + ParseUser.CurrentUser.Username.ToString().ToUpper();
 		StartCoroutine ("GetMatches");
 	}
 
@@ -87,7 +87,7 @@ public class MyMatches : MonoBehaviour {
 	IEnumerator FindMatch()
 	{
 		//get count of matches waiting
-		ParseQuery<ParseObject> mainQuery = new ParseQuery<ParseObject> ("Match").WhereNotEqualTo ("player1", AppModel.currentUserName).WhereEqualTo ("status", "waiting");
+		ParseQuery<ParseObject> mainQuery = new ParseQuery<ParseObject> ("Match").WhereNotEqualTo ("playerOne", ParseUser.CurrentUser).WhereEqualTo ("status", "waiting");
 		var find = mainQuery.CountAsync ();	
 		while (!find.IsCompleted) yield return null;
 		int resultCount = find.Result;
@@ -95,13 +95,13 @@ public class MyMatches : MonoBehaviour {
 		if (resultCount > 0) {
 			Debug.Log ("found " + resultCount + " matches, picking random one");
 			var skipNumber = Random.Range (0, resultCount);
-			mainQuery = new ParseQuery<ParseObject> ("Match").WhereNotEqualTo ("player1", AppModel.currentUserName).WhereEqualTo ("status", "waiting").Limit (1).Skip(skipNumber);
+			mainQuery = new ParseQuery<ParseObject> ("Match").WhereNotEqualTo ("playerOne", ParseUser.CurrentUser).WhereEqualTo ("status", "waiting").Limit (1).Skip(skipNumber);
 			var retrieve = mainQuery.FindAsync();
 			while (!retrieve.IsCompleted) yield return null;
 			IEnumerable<ParseObject> foundMatches = retrieve.Result;
 			if (foundMatches.Count () > 0) {
 				var match = foundMatches.ElementAt(0);
-				Debug.Log("trying to join random match " + match.ObjectId + " where " + match["player1"] + " is waiting");
+				Debug.Log("trying to join random match " + match.ObjectId + " where " + match["playerOne"] + " is waiting");
 				match.Increment("matchLock");
 				var save = match.SaveAsync();
 				
@@ -113,15 +113,19 @@ public class MyMatches : MonoBehaviour {
 				ParseObject lockedMatch = getMatch.Result;
 				if(int.Parse(lockedMatch["matchLock"].ToString()) <= 1){
 					Debug.Log("successfully locked match " + match.ObjectId);
-					match["player2"] = AppModel.currentUserName;
-					match["player2DisplayName"] = AppModel.currentDisplayName;
+					match["playerTwo"] = ParseUser.CurrentUser;
+					//match["player2DisplayName"] = AppModel.currentDisplayName;
 					match["status"] = "active";
-					match["turn"] = AppModel.currentUserName;
+					match["playerTurn"] = ParseUser.CurrentUser;
 					var updateMatch = match.SaveAsync();
 					while (!updateMatch.IsCompleted) yield return null;
 					if(!updateMatch.IsCanceled && !updateMatch.IsFaulted){
 						Debug.Log("successfully activated match, player2:s turn");
 						StartCoroutine("GetMatches");
+					}
+					else
+					{
+						Debug.Log("error adding current user as player 2 for match..");
 					}
 				}
 				else{
@@ -143,8 +147,8 @@ public class MyMatches : MonoBehaviour {
 	//Create a new match with status waiting
 	IEnumerator CreateMatch(){
 		ParseObject newMatch = new ParseObject("Match");
-		newMatch["player1"] = AppModel.currentUserName.ToString();
-		newMatch ["player1DisplayName"] = AppModel.currentDisplayName.ToString ();
+		newMatch["playerOne"] = ParseUser.CurrentUser;
+		//newMatch ["player1DisplayName"] = AppModel.currentDisplayName.ToString ();
 		newMatch["status"] = "waiting";
 		newMatch ["matchLock"] = 0;
 		var saveNewMatch = newMatch.SaveAsync();
@@ -161,7 +165,7 @@ public class MyMatches : MonoBehaviour {
 	//Retrieve all matches for current player
 	IEnumerator GetMatches(){
 		//get matches where user is player1
-		ParseQuery<ParseObject> mainQuery = new ParseQuery<ParseObject>("Match").WhereEqualTo("player1", AppModel.currentUserName);
+		ParseQuery<ParseObject> mainQuery = new ParseQuery<ParseObject>("Match").Include("playerOne,playerTwo,playerTurn").WhereEqualTo("playerOne", ParseUser.CurrentUser);
 		var find = mainQuery.FindAsync ();	
 		while (!find.IsCompleted) yield return null;
 		if (find.IsCanceled || find.IsFaulted) {
@@ -169,7 +173,7 @@ public class MyMatches : MonoBehaviour {
 		}
 		IEnumerable<ParseObject> results = find.Result;
 		//get matches where user is player2
-		mainQuery = new ParseQuery<ParseObject>("Match").WhereEqualTo("player2", AppModel.currentUserName);
+		mainQuery = new ParseQuery<ParseObject>("Match").Include("playerOne,playerTwo,playerTurn").WhereEqualTo("playerTwo", ParseUser.CurrentUser);
 		find = mainQuery.FindAsync ();
 		while (!find.IsCompleted) yield return null;
 		//merge the two results
@@ -210,24 +214,27 @@ public class MyMatches : MonoBehaviour {
 
 		foreach(ParseObject p in results){
 			//Get opponentUserName name
+			ParseUser opponent = null;
 			string opponentUserName = "";
 			string opponentDisplayName = "";
-			if(p["player1"].ToString() == AppModel.currentUserName)
+			if(p["playerOne"] == ParseUser.CurrentUser)
 			{
-				if(p.ContainsKey("player2"))
+				if(p.ContainsKey("playerTwo"))
 				{
-					opponentUserName = p["player2"].ToString();
-					opponentDisplayName = p["player2DisplayName"].ToString();
+					opponent = p["playerTwo"] as ParseUser;
+					opponentUserName = opponent.Username.ToString();
+					opponentDisplayName = opponent["displayName"].ToString();
 				}
 			}
 			else
 			{
-				opponentUserName = p["player1"].ToString();
-				opponentDisplayName = p["player1DisplayName"].ToString();
+				opponent = p["playerOne"] as ParseUser;
+				opponentUserName = opponent.Username.ToString();
+				opponentDisplayName = opponent["displayName"].ToString();
 			}
 
 			//Add friend button
-			if(!existingFriends.Contains(opponentUserName))
+			if(p["status"].ToString() != "waiting" && !existingFriends.Contains(opponentUserName))
 			{
 				GameObject addFriendButtonInstance = Instantiate(AddFriendButton, new Vector3(455,initialY,0), transform.rotation) as GameObject;
 				addFriendButtonInstance.transform.SetParent(GameObject.Find ("Matches").transform, false);
@@ -254,16 +261,16 @@ public class MyMatches : MonoBehaviour {
 			}
 			else if(p["status"].ToString() == "active")
 			{
-				if(p["turn"].ToString() == AppModel.currentUserName)
+				ParseUser playerTurn = p["playerTurn"] as ParseUser;
+				if(playerTurn.ObjectId.Equals(ParseUser.CurrentUser.ObjectId))
 					matchButtonText.text = "Your turn against " + opponentDisplayName;
 				else
 					matchButtonText.text = "Waiting for " + opponentDisplayName;
 				
 				//Store match object and current opponentUserName on button
 				MatchButtonScript mbs = matchButtonInstance.GetComponent<MatchButtonScript>(); 
-				mbs.opponentUserName = opponentUserName;
-				mbs.opponentDisplayName = opponentDisplayName;
-				mbs.parseObject = p;
+				mbs.opponent = opponent;
+				mbs.matchObject = p;
 				
 				//Add click event
 				Button matchButton = matchButtonInstance.GetComponent<Button>();
@@ -271,7 +278,7 @@ public class MyMatches : MonoBehaviour {
 			}
 			else if(p["status"].ToString() == "finished")
 			{
-				if(p["victor"].ToString() == AppModel.currentUserName)
+				if(p["victor"].ToString() == ParseUser.CurrentUser.Username)
 					matchButtonText.text = "You won against " + opponentDisplayName + "!";
 				else
 					matchButtonText.text = "You lost against " + opponentDisplayName;
@@ -303,9 +310,8 @@ public class MyMatches : MonoBehaviour {
 	public void matchButtonClicked(Button b) 
 	{
 		MatchButtonScript mbs = b.GetComponent<MatchButtonScript>();
-		AppModel.currentOpponentUserName = mbs.opponentUserName.ToString ();
-		AppModel.currentOpponentDisplayName = mbs.opponentDisplayName.ToString ();
-		AppModel.currentMatch = mbs.parseObject;
+		AppModel.currentOpponent = mbs.opponent;
+		AppModel.currentMatch = mbs.matchObject;
 		Application.LoadLevel ("Match");
 	}
 
