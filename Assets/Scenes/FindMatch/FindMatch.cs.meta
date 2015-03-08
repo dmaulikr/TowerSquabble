@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 6efe1bdecf1154e7d910494a52f69973
+timeCreated: 1425808790
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - ChallengeFriendButton: {fileID: 174998, guid: c93c9afc1418e4e2c939c85fc5958617,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
