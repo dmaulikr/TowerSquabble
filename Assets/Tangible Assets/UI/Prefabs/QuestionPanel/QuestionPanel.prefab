@@ -418,9 +418,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: .79411763, g: 0, b: 0, a: .862745106}
-  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Color: {r: 1, g: 1, b: 1, a: .862745106}
+  m_Sprite: {fileID: 21300000, guid: a658fc3c8c4ce41f69005a860af59541, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -484,8 +484,8 @@ MonoBehaviour:
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FontData:
     m_Font: {fileID: 12800000, guid: 062fcdfb70b4d4b1d8029351c8d2bf13, type: 3}
-    m_FontSize: 60
-    m_FontStyle: 0
+    m_FontSize: 65
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
@@ -627,7 +627,7 @@ RectTransform:
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
   m_AnchoredPosition: {x: 1.52587891e-05, y: -5.14984131e-05}
-  m_SizeDelta: {x: 900, y: 634}
+  m_SizeDelta: {x: 1100, y: 634}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22426268
 RectTransform:
@@ -644,7 +644,7 @@ RectTransform:
   m_RootOrder: 3
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 362, y: 119}
+  m_AnchoredPosition: {x: 433, y: 149}
   m_SizeDelta: {x: 180, y: 180}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22441422
@@ -661,8 +661,8 @@ RectTransform:
   m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -3, y: 29}
-  m_SizeDelta: {x: -42, y: -269}
+  m_AnchoredPosition: {x: -.249988556, y: 38}
+  m_SizeDelta: {x: -211.5, y: -343}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22441986
 RectTransform:
@@ -695,8 +695,8 @@ RectTransform:
   m_RootOrder: 0
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -3.00001526, y: 240}
-  m_SizeDelta: {x: -42, y: -516}
+  m_AnchoredPosition: {x: 36, y: 215}
+  m_SizeDelta: {x: -388, y: -516}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22457174
 RectTransform:
@@ -713,7 +713,7 @@ RectTransform:
   m_RootOrder: 4
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -175, y: 119}
+  m_AnchoredPosition: {x: -266, y: 149}
   m_SizeDelta: {x: 320, y: 180}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22460032
@@ -731,7 +731,7 @@ RectTransform:
   m_RootOrder: 2
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 136, y: 119}
+  m_AnchoredPosition: {x: 207, y: 149}
   m_SizeDelta: {x: 180, y: 180}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22475552
