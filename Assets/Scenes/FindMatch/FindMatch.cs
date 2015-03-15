@@ -15,8 +15,7 @@ public class FindMatch : MonoBehaviour {
 	void Start () {
 		StartCoroutine("RetrieveFriends");
 	}
-	
-	
+
 	//Find a new match to join. If no waiting match is found, a new one will be created
 	IEnumerator FindRandomMatch()
 	{
@@ -83,7 +82,6 @@ public class FindMatch : MonoBehaviour {
 	IEnumerator CreateMatch(){
 		ParseObject newMatch = new ParseObject("Match");
 		newMatch["playerOne"] = ParseUser.CurrentUser;
-		//newMatch ["player1DisplayName"] = AppModel.currentDisplayName.ToString ();
 		newMatch["status"] = "waiting";
 		newMatch ["matchLock"] = 0;
 		var saveNewMatch = newMatch.SaveAsync();
@@ -102,7 +100,21 @@ public class FindMatch : MonoBehaviour {
 	//TODO: Implement
 	public IEnumerator ChallengeFriend(ParseUser playerChallenged)
 	{
-		yield return null;
+		ParseObject newMatch = new ParseObject("Match");
+		newMatch["playerOne"] = ParseUser.CurrentUser;
+		newMatch["playerTwo"] = playerChallenged;
+		newMatch["status"] = "challenging";
+		newMatch ["matchLock"] = 0;
+		var saveNewMatch = newMatch.SaveAsync();
+		while (!saveNewMatch.IsCompleted) yield return null;
+		if (!saveNewMatch.IsCanceled || !saveNewMatch.IsFaulted) {
+			Debug.Log (playerChallenged.Username + " is challenged!");
+			Application.LoadLevel("MyMatches");
+		} 
+		else {
+			Debug.Log("error challenging " + playerChallenged.Username);
+			Application.LoadLevel("MyMatches");
+		}
 	}
 
 	public IEnumerator RetrieveFriends(){

@@ -84,23 +84,6 @@ public class MyMatches : MonoBehaviour {
 
 	//Retrieve all matches for current player
 	IEnumerator GetMatches(){
-		//get matches where user is player1
-		ParseQuery<ParseObject> mainQuery = new ParseQuery<ParseObject>("Match").Include("playerOne,playerTwo,playerTurn").WhereEqualTo("playerOne", ParseUser.CurrentUser);
-		var find = mainQuery.FindAsync ();	
-		while (!find.IsCompleted) yield return null;
-		if (find.IsCanceled || find.IsFaulted) {
-			Debug.Log(find.Exception.InnerExceptions[0]);
-		}
-		IEnumerable<ParseObject> results = find.Result;
-		//get matches where user is player2
-		mainQuery = new ParseQuery<ParseObject>("Match").Include("playerOne,playerTwo,playerTurn").WhereEqualTo("playerTwo", ParseUser.CurrentUser);
-		find = mainQuery.FindAsync ();
-		while (!find.IsCompleted) yield return null;
-		//merge the two results
-		results = results.Concat(find.Result);
-		//sort the results by status
-		results = results.Where(x => x["status"].ToString() == "waiting").Concat(results.Where(x => x["status"].ToString() == "active")).Concat(results.Where(x => x["status"].ToString() == "finished"));
-
 		//retrieve existing friends
 		List<string> existingFriends = new List<string>();
 		ParseQuery<ParseObject> friendsQuery = new ParseQuery<ParseObject>("FriendRelationship").Include("friend").WhereEqualTo("player", ParseUser.CurrentUser);
@@ -125,6 +108,24 @@ public class MyMatches : MonoBehaviour {
 			Destroy(g);
 		}
 
+		//get matches where user is player1
+		ParseQuery<ParseObject> mainQuery = new ParseQuery<ParseObject>("Match").Include("playerOne,playerTwo,playerTurn").WhereEqualTo("playerOne", ParseUser.CurrentUser);
+		var find = mainQuery.FindAsync ();	
+		while (!find.IsCompleted) yield return null;
+		if (find.IsCanceled || find.IsFaulted) {
+			Debug.Log(find.Exception.InnerExceptions[0]);
+		}
+		IEnumerable<ParseObject> results = find.Result;
+		//get matches where user is player2
+		mainQuery = new ParseQuery<ParseObject>("Match").Include("playerOne,playerTwo,playerTurn").WhereEqualTo("playerTwo", ParseUser.CurrentUser);
+		find = mainQuery.FindAsync ();
+		while (!find.IsCompleted) yield return null;
+		//merge the two results
+		results = results.Concat(find.Result);
+		//sort the results by status
+		results = results.Where(x => x["status"].ToString() == "waiting").Concat (results.Where(x => x["status"].ToString() == "challenging")).Concat(results.Where(x => x["status"].ToString() == "active")).Concat(results.Where(x => x["status"].ToString() == "finished"));
+
+		//reset variables for these results
 		refreshing = false;
 		int counter = 0;
 		int initialY = 0;
@@ -132,8 +133,9 @@ public class MyMatches : MonoBehaviour {
 		var scrollContainer = GameObject.Find("MatchesScrollContent").GetComponent<RectTransform>();
 		scrollContainer.sizeDelta = new Vector2(200, 1980);
 
+		//iterate results
 		foreach(ParseObject p in results){
-			//Get opponentUserName name
+			//Get opponent
 			ParseUser opponent = null;
 			string opponentUserName = "";
 			string opponentDisplayName = "";
@@ -170,7 +172,7 @@ public class MyMatches : MonoBehaviour {
 				addClickEvent(addFriendButton, "AddFriend");
 			}
 
-			//Instantiate button
+			//Instantiate match button
 			GameObject matchButtonInstance = Instantiate(MatchButton, new Vector3(0,initialY,0), transform.rotation) as GameObject;
 			matchButtonInstance.transform.SetParent(GameObject.Find ("Matches").transform, false);
 			matchButtonInstance.tag = "MatchButton";
@@ -179,6 +181,10 @@ public class MyMatches : MonoBehaviour {
 			if(p["status"].ToString() == "waiting")
 			{
 				matchButtonText.text = "Searching for opponent...";
+			}
+			else if(p["status"].ToString() == "challenging")
+			{
+				matchButtonText.text = "Challenging (TBI)";
 			}
 			else if(p["status"].ToString() == "active")
 			{
