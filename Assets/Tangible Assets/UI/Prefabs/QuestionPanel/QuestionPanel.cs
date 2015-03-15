@@ -10,9 +10,13 @@ public class QuestionPanel : MonoBehaviour {
 	public Button maybeButton;
 	public Text questionText;
 
+	// Implementation details
+	// This flag will be set to true when the dissable animation is playing
+	private bool dissableAnimationInProgress = false;
+
 	private void Dissable()
 	{
-		Enable(false);
+		gameObject.GetComponent<Animator>().Play("QuestionPanel_Deactivate");
 	}
 
 	private void Enable(bool enable)
@@ -67,6 +71,15 @@ public class QuestionPanel : MonoBehaviour {
 	// Update is called once per frame
 	void Update() 
 	{
-	
+		if(!dissableAnimationInProgress && gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("QuestionPanel_Deactivate"))
+		{
+			dissableAnimationInProgress = true;
+		}
+		// If dissable animation has finished playing, dissable the control.
+		else if(dissableAnimationInProgress && gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+		{
+			dissableAnimationInProgress = false;
+			Enable(false);
+		}
 	}
 }

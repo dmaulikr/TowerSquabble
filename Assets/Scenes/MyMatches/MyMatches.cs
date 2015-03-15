@@ -25,12 +25,16 @@ public class MyMatches : MonoBehaviour {
 	{
 		refreshing = true;
 
-		if (ParseUser.CurrentUser == null)
-			Application.LoadLevel ("Login");
-
-		userText = GameObject.Find ("WelcomeText").GetComponent<Text> ();
-		userText.text = "WELCOME " + ParseUser.CurrentUser["displayName"].ToString().ToUpper();
-		StartCoroutine ("GetMatches");
+		if(ParseUser.CurrentUser == null)
+		{
+			Application.LoadLevel("Login");
+		}
+		else
+		{
+			userText = GameObject.Find ("WelcomeText").GetComponent<Text> ();
+			userText.text = "WELCOME " + ParseUser.CurrentUser["displayName"].ToString().ToUpper();
+			StartCoroutine ("GetMatches");
+		}
 	}
 
 	void Update ()
@@ -93,7 +97,6 @@ public class MyMatches : MonoBehaviour {
 	{
 		Random.seed = Time.time.GetHashCode();
 		int signOut = Random.Range(0,2);
-		Debug.Log (signOut);
 		if(signOut == 1)
 		{
 			SignOut_QuestionPanel_Yes();
@@ -223,7 +226,7 @@ public class MyMatches : MonoBehaviour {
 				{
 					matchButtonInstance.SetActive(false);
 					currentMatch = p;
-					questionPanel.AskQuestion("Play against " + opponentDisplayName + "?", Challenge_QuestionPanel_Yes, Challenge_QuestionPanel_No, Challenge_QuestionPanel_Maybe);
+					questionPanel.AskQuestion("Play against your mega awesome friend '" + opponentDisplayName + "'?", Challenge_QuestionPanel_Yes, Challenge_QuestionPanel_No, Challenge_QuestionPanel_Maybe);
 				}
 			}
 			else if(p["status"].ToString() == "active")
