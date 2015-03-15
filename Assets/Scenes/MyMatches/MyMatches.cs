@@ -18,6 +18,8 @@ public class MyMatches : MonoBehaviour {
 	Text userText;
 	public QuestionPanel questionPanel;
 
+	private ParseObject currentMatch;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -115,12 +117,14 @@ public class MyMatches : MonoBehaviour {
 		ParseQuery<ParseObject> friendsQuery = new ParseQuery<ParseObject>("FriendRelationship").Include("friend").WhereEqualTo("player", ParseUser.CurrentUser);
 		var findFriends = friendsQuery.FindAsync ();	
 		while (!findFriends.IsCompleted) yield return null;
-		if (findFriends.IsCanceled || findFriends.IsFaulted) {
+		if (findFriends.IsCanceled || findFriends.IsFaulted) 
+		{
 			Debug.Log(findFriends.Exception.InnerExceptions[0]);
 		}
-		else{
+		else
+		{
 			IEnumerable<ParseObject> friendResults = findFriends.Result;
-			foreach (ParseObject p in friendResults) 
+			foreach (ParseObject p in friendResults)
 			{
 				ParseUser user = p["friend"] as ParseUser;
 				existingFriends.Add(user["username"].ToString());
@@ -210,8 +214,17 @@ public class MyMatches : MonoBehaviour {
 			}
 			else if(p["status"].ToString() == "challenging")
 			{
-				matchButtonText.text = "Challenging (TBI)";
-				StartCoroutine("RejectMatch", p);
+				ParseUser challengingPlayer =  p["playerOne"] as ParseUser;
+				if(challengingPlayer.ObjectId.Equals(ParseUser.CurrentUser.ObjectId))
+				{
+					matchButtonText.text = "Challenging " + opponentUserName;
+				}
+				else
+				{
+					matchButtonInstance.SetActive(false);
+					currentMatch = p;
+					questionPanel.AskQuestion("Play against " + opponentDisplayName + "?", Challenge_QuestionPanel_Yes, Challenge_QuestionPanel_No, Challenge_QuestionPanel_Maybe);
+				}
 			}
 			else if(p["status"].ToString() == "active")
 			{
@@ -248,6 +261,30 @@ public class MyMatches : MonoBehaviour {
 			}
 		}
 		scrollContainer.position = new Vector3(scrollContainer.position.x, newScrollContainerY, scrollContainer.position.z);
+	}
+
+	void Challenge_QuestionPanel_Yes()
+	{
+		StartCoroutine("AcceptMatch", currentMatch);
+	}
+
+	void Challenge_QuestionPanel_No()
+	{
+		StartCoroutine("RejectMatch", currentMatch);
+	}
+
+	void Challenge_QuestionPanel_Maybe()
+	{
+		Random.seed = Time.time.GetHashCode();
+		int val = Random.Range(0,2);
+		if(val == 1)
+		{
+			StartCoroutine("AcceptMatch", currentMatch);
+		}
+		else
+		{
+			StartCoroutine("RejectMatch", currentMatch);
+		}
 	}
 
 	private IEnumerator AcceptMatch(ParseObject match)

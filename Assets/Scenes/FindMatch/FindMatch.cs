@@ -160,7 +160,9 @@ public class FindMatch : MonoBehaviour {
 		scrollContainer.position = new Vector3(scrollContainer.position.x, newScrollContainerY, scrollContainer.position.z);
 		}
 	}
-	
+
+
+
 	private void addClickEvent(Button b)
 	{
 		b.onClick.AddListener(() => challengeFriendButtonClicked(b));
