@@ -127,11 +127,6 @@ public class BuildingBlockSlotMachine : MonoBehaviour
 		{
 			GameObject.Find("BackButton").GetComponent<Button>().interactable = false;
 		}
-		//When player drops the third block, remove information about current move
-		else if(blocksUsed > 1)
-		{
-			GameObject.Find("BackButton").GetComponent<Button>().interactable = true;
-		}
 		blocksUsed++;
 
 		buildingBlockButtons[index].CurrentBuildingBlockType = ParseBuildingBlock.Type.none;

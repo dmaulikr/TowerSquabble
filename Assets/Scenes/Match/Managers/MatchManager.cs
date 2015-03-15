@@ -21,7 +21,7 @@ public class MatchManager : MonoBehaviour {
 	// NOTE: Only set when blocksRetrievedFromParse = true
 	IEnumerable<ParseBuildingBlock> result;
 	private bool blocksRetrievedFromParse = false;
-	private bool dataSubmittedToParse = false; // Was data submitted to Parse this round?
+	public bool dataSubmittedToParse = false; // Was data submitted to Parse this round? (OPEN POINT: Make public)
 	// Reference to header text (OPEN POINT: Move?)
 	public Text headerText;
 	// Has match ended?
@@ -44,6 +44,8 @@ public class MatchManager : MonoBehaviour {
 		hasStartSwayTimerStarted = false;
 		// Init game over varible
 		gameOver = false;
+		// Init has match ended varible
+		hasMatchEnded = false;
 		// Init "data submitted to Parse" varible
 		dataSubmittedToParse = false;
 		// Init building block index
@@ -75,6 +77,7 @@ public class MatchManager : MonoBehaviour {
 	// Are all building blocks in the scene still
 	public bool AreAllBuildingBlocksStill()
 	{
+		bool areAllBuildingBlocksStill = true;
 		// Get all building blocks in the scene
 		GameObject[] buildingBlocks = GameObject.FindGameObjectsWithTag("BuildingBlock");
 		// Loop through the rigidbodies of all the building blocks and check their velocity
@@ -85,20 +88,22 @@ public class MatchManager : MonoBehaviour {
 				// Check if sway timer has passed max time
 				if(Time.time > (swayTimerStarted + swayMaxWaitTime)) 
 				{
-					// Set velocity to 0 for all building blocks in the scene
-					foreach(GameObject go in buildingBlocks)
+					// Check velocity: if large, do not set it to 0
+					if((g.GetComponent<Rigidbody2D>().velocity.x > 0.1f || g.GetComponent<Rigidbody2D>().velocity.x < -0.1f) ||
+					   (g.GetComponent<Rigidbody2D>().velocity.y > 0.1f || g.GetComponent<Rigidbody2D>().velocity.y < -0.1f))
 					{
-						// OPEN POINT: Check velocity: if large, do not set it to 0
-						go.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-						go.GetComponent<Rigidbody2D>().angularVelocity = 0f;
+						continue; // Skip this building block
 					}
-					Debug.Log ("Max sway time!");
+					// Set velocity to 0 for all building blocks in the scene
+					g.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+					g.GetComponent<Rigidbody2D>().angularVelocity = 0f;
+					g.GetComponent<Rigidbody2D>().Sleep();
 				}
-				return false;
+				areAllBuildingBlocksStill = false;
 			}
 		}
 
-		return true;
+		return areAllBuildingBlocksStill;
 	}
 
 	//Query the blocks that are referenced in the match's array blocks
@@ -232,6 +237,9 @@ public class MatchManager : MonoBehaviour {
 			headerText.text = "Waiting for " + AppModel.currentOpponent["displayName"].ToString();
 			refreshImage.gameObject.SetActive(true);
 		}
+
+		// Activate back button
+		GameObject.Find("BackButton").GetComponent<Button>().interactable = true;
 	}
 
 	// Back button clicked
@@ -294,12 +302,14 @@ public class MatchManager : MonoBehaviour {
 			headerText.text = "You lost, fuck off!";
 			//TODO: delete all building blocks with this matchId. probably need to use Parse Cloud job
 		}
+		// Activate back button
+		GameObject.Find("BackButton").GetComponent<Button>().interactable = true;
 	}
 
 	// Update is called once per frame
 	void Update() 
 	{
-		if (refreshing) 
+		if(refreshing) 
 		{
 			refreshImage.transform.Rotate(0, 0, 600 * Time.deltaTime * -1, Space.World);
 		}
@@ -317,6 +327,7 @@ public class MatchManager : MonoBehaviour {
 			StartCoroutine("EndGame");
 		}
 
+		// Start timer counting down towards max sway time.
 		if(buildingBlockSlotMachine.AreAllBuildingBlocksPlaced() && !hasStartSwayTimerStarted)
 		{
 			StartSwayTimer();
