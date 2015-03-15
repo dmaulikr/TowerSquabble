@@ -96,8 +96,7 @@ public class FindMatch : MonoBehaviour {
 			Application.LoadLevel("MyMatches");
 		}
 	}
-
-	//TODO: Implement
+	
 	public IEnumerator ChallengeFriend(ParseUser playerChallenged)
 	{
 		ParseObject newMatch = new ParseObject("Match");
@@ -162,7 +161,7 @@ public class FindMatch : MonoBehaviour {
 		}
 	}
 	
-	void addClickEvent(Button b)
+	private void addClickEvent(Button b)
 	{
 		b.onClick.AddListener(() => challengeFriendButtonClicked(b));
 	}

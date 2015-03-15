@@ -185,6 +185,7 @@ public class MyMatches : MonoBehaviour {
 			else if(p["status"].ToString() == "challenging")
 			{
 				matchButtonText.text = "Challenging (TBI)";
+				StartCoroutine("RejectMatch", p);
 			}
 			else if(p["status"].ToString() == "active")
 			{
@@ -221,6 +222,33 @@ public class MyMatches : MonoBehaviour {
 			}
 		}
 		scrollContainer.position = new Vector3(scrollContainer.position.x, newScrollContainerY, scrollContainer.position.z);
+	}
+
+	private IEnumerator AcceptMatch(ParseObject match)
+	{
+		match.Increment("matchLock");
+		match["status"] = "active";
+		match["playerTurn"] = match["playerTwo"];
+		var save = match.SaveAsync();
+		while (!save.IsCompleted) yield return null;
+		if(!save.IsCanceled && !save.IsFaulted)
+		{
+			Debug.Log("Match accepted!");
+			refreshing = true;
+			StartCoroutine("GetMatches");
+		}
+	}
+
+	private IEnumerator RejectMatch(ParseObject match)
+	{
+		var save = match.DeleteAsync();
+		while (!save.IsCompleted) yield return null;
+		if(!save.IsFaulted && !save.IsCanceled)
+		{
+			Debug.Log("Match rejected");
+			refreshing = true;
+			StartCoroutine("GetMatches");
+		}
 	}
 
 	void addClickEvent(Button b, string buttonType)
