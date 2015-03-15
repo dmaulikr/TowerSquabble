@@ -28,10 +28,10 @@ public class CircusDirectorAnimation : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		bool idle1 = animator.GetBool(animationNameList[0]);
+		/*bool idle1 = animator.GetBool(animationNameList[0]);
 		bool idle2 = animator.GetBool(animationNameList[1]);
 		bool idle3 = animator.GetBool(animationNameList[2]);
-		bool idle4 = animator.GetBool(animationNameList[3]);
+		bool idle4 = animator.GetBool(animationNameList[3]);*/
 
 		if(animator.GetCurrentAnimatorStateInfo(0).IsName(animationNameList[0]))
 		{
