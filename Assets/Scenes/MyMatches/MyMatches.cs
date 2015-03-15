@@ -16,6 +16,7 @@ public class MyMatches : MonoBehaviour {
 	public GameObject MatchButton;
 	public GameObject AddFriendButton;
 	Text userText;
+	public QuestionPanel questionPanel;
 
 	// Use this for initialization
 	void Start () 
@@ -72,8 +73,33 @@ public class MyMatches : MonoBehaviour {
 
 	public void Button_SignOut_Clicked()
 	{
+		questionPanel.AskQuestion("Do you really want to sign out?", SignOut_QuestionPanel_Yes, SignOut_QuestionPanel_No, SignOut_QuestionPanel_Maybe);
+	}
+	
+	void SignOut_QuestionPanel_Yes()
+	{
 		ParseUser.LogOut();
 		Application.LoadLevel("Login");
+	}
+
+	void SignOut_QuestionPanel_No()
+	{
+		// Do nothing
+	}
+
+	void SignOut_QuestionPanel_Maybe()
+	{
+		Random.seed = Time.time.GetHashCode();
+		int signOut = Random.Range(0,2);
+		Debug.Log (signOut);
+		if(signOut == 1)
+		{
+			SignOut_QuestionPanel_Yes();
+		}
+		else
+		{
+			SignOut_QuestionPanel_No();
+		}
 	}
 
 	public void Button_Refresh_Clicked()
