@@ -88,7 +88,8 @@ public class MatchManager : MonoBehaviour {
 		// Loop through the rigidbodies of all the building blocks and check their velocity
 		foreach(GameObject g in buildingBlocks)
 		{
-			if(!Mathf.Approximately(g.GetComponent<Rigidbody2D>().velocity.x,0.0f) || !Mathf.Approximately(g.GetComponent<Rigidbody2D>().velocity.y,0.0f))
+			if(!MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.x,0.0f) || 
+			   !MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.y,0.0f))
 			{
 				// Check if sway timer has passed max time
 				if(Time.time > (swayTimerStarted + swayMaxWaitTime)) 
@@ -299,7 +300,7 @@ public class MatchManager : MonoBehaviour {
 				yield return null;
 			if(ParseUser.CurrentUser == null) 
 			{
-				Debug.Log ("Beep error");
+				Debug.LogError("Not able to login with user");
 			}
 		}
 		headerText.text = "Loading blocks...";
