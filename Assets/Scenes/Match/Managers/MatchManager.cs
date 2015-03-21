@@ -4,10 +4,15 @@ using System.Collections;
 using Parse;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 //using UnityEditor; // for debug
 
 public class MatchManager : MonoBehaviour {
+	// Are we debugging physics 2D?
+	public bool debugPhysics2D = false;
+	// Switch user button
+	public Button switchUserButton;
 	// Is the scene refreshing?
 	public Image refreshImage;
 	public bool refreshing = false;
@@ -242,6 +247,16 @@ public class MatchManager : MonoBehaviour {
 		GameObject.Find("BackButton").GetComponent<Button>().interactable = true;
 	}
 
+	public void Button_SwitchUser_Clicked()
+	{
+		if(!debugPhysics2D)
+		{
+			return;
+		}
+		refreshing = true;
+		StartCoroutine ("RefreshScene", true);
+	}
+
 	// Back button clicked
 	// OPEN POINT: Move?
 	public void Button_Back_Clicked()
@@ -262,15 +277,30 @@ public class MatchManager : MonoBehaviour {
 	public void Button_Refresh_Clicked()
 	{
 		refreshing = true;
-		StartCoroutine ("RefreshScene");
+		StartCoroutine ("RefreshScene", false);
 	}
 
-	IEnumerator RefreshScene()
+	IEnumerator RefreshScene(bool changeUser)
 	{
 		var gameObjectBlocks = GameObject.FindGameObjectsWithTag ("BuildingBlock");
-		foreach (var gameObjectBlock in gameObjectBlocks) 
+		foreach(var gameObjectBlock in gameObjectBlocks) 
 		{
 			Destroy(gameObjectBlock);
+		}
+		if(changeUser)
+		{
+			Task<ParseUser> user;
+			if(ParseUser.CurrentUser["displayName"].ToString() == "Adam")
+				user = ParseUser.LogInAsync ("Emil", "emil123");
+			else
+				user = ParseUser.LogInAsync ("Adam", "adam123");
+			
+			while (!user.IsCompleted)
+				yield return null;
+			if(ParseUser.CurrentUser == null) 
+			{
+				Debug.Log ("Beep error");
+			}
 		}
 		headerText.text = "Loading blocks...";
 		ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Match").WhereEqualTo("objectId", AppModel.currentMatch.ObjectId);
@@ -286,6 +316,17 @@ public class MatchManager : MonoBehaviour {
 	// Use this for initialization
 	void Start() 
 	{
+		if(!debugPhysics2D)
+		{
+			switchUserButton.gameObject.SetActive(false);
+			switchUserButton.enabled = false;
+		}
+		else
+		{
+			switchUserButton.gameObject.SetActive(true);
+			switchUserButton.enabled = true;
+		}
+
 		ResetSceneVaribles ();
 		// Create the scene
 		StartCoroutine("GetBlocksFromParse"); // From parse

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GUIActionManager : MonoBehaviour
+public class UIActionManager : MonoBehaviour
 {
 	public void GoToScene_MainMenu()
 	{
