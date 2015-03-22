@@ -1625,6 +1625,10 @@ Prefab:
       propertyPath: debugPhysics2D
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11484170, guid: 6148eb4dce26245b0bf7dfbee4f9f6d6, type: 2}
+      propertyPath: swayMaxWaitTime
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6148eb4dce26245b0bf7dfbee4f9f6d6, type: 2}
   m_IsPrefabParent: 0

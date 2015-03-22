@@ -36,7 +36,7 @@ public class MatchManager : MonoBehaviour {
 
 	// Timer varibles
 	private float swayTimerStarted = 0f;
-	public float swayMaxWaitTime = 10f;
+	public float swayMaxWaitTime = 5f;
 	private bool hasStartSwayTimerStarted = false;
 
 	// Is user interacting with GUI?
@@ -91,6 +91,7 @@ public class MatchManager : MonoBehaviour {
 			if(!MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.x,0.0f) || 
 			   !MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.y,0.0f))
 			{
+				areAllBuildingBlocksStill = false;
 				// Check if sway timer has passed max time
 				if(Time.time > (swayTimerStarted + swayMaxWaitTime)) 
 				{
@@ -100,13 +101,19 @@ public class MatchManager : MonoBehaviour {
 					{
 						continue; // Skip this building block
 					}
-					// Set velocity to 0 for all building blocks in the scene
+					// Set velocity to 0 for this building block
 					g.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
 					g.GetComponent<Rigidbody2D>().angularVelocity = 0f;
 					g.GetComponent<Rigidbody2D>().Sleep();
 				}
-				areAllBuildingBlocksStill = false;
 			}
+		}
+
+		// Return false if timer has not been on for at least 3 sec
+		if((Time.time <= (swayTimerStarted + 3) && hasStartSwayTimerStarted)
+		   || !hasStartSwayTimerStarted) 
+		{
+			return false;
 		}
 
 		return areAllBuildingBlocksStill;
@@ -309,6 +316,7 @@ public class MatchManager : MonoBehaviour {
 		while (!find.IsCompleted) yield return null;
 		if (!find.IsCanceled && !find.IsFaulted) 
 		{
+			ResetSceneVaribles();
 			AppModel.currentMatch = find.Result;
 			Application.LoadLevel (Application.loadedLevelName);
 		}
@@ -380,7 +388,8 @@ public class MatchManager : MonoBehaviour {
 		   GetNumberOfBuildingBlocks() != 0 &&
 		   AreAllBuildingBlocksStill() &&
 		   !dataSubmittedToParse && 
-		   !gameOver)
+		   !gameOver && 
+		   hasStartSwayTimerStarted)
 		{
 			SubmitSceneToParse();
 			dataSubmittedToParse = true;

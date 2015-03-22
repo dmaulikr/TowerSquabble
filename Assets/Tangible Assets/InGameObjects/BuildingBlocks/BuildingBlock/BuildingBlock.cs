@@ -10,7 +10,7 @@ public class BuildingBlock : MonoBehaviour
 	// An index that keeps track of the order of when blocks were put in the scene (do not modify in this script)
 	public int index = 0;
 
-	// Flashing ring particle
+	// Flashing particle ring
 	public GameObject flashingRing;
 	// Release boundaries game object
 	public GameObject releaseBoundaries;
@@ -118,6 +118,14 @@ public class BuildingBlock : MonoBehaviour
 
 	void OnCollisionEnter2D(Collision2D collision)
 	{
+		if(!hasCollided)
+		{
+			hasCollided = true;
+			// Notify the match manager
+			
+		}
+
+		// Try to damp impact of collision
 		if(collision.gameObject.tag == "BuildingBlock")
 		{
 			float minForce = 10f;
@@ -153,8 +161,6 @@ public class BuildingBlock : MonoBehaviour
 					velo.y = newVel;
 				}
 				gameObject.GetComponent<Rigidbody2D>().velocity = velo;
-
-				//gameObject.GetComponent<Rigidbody2D>().angularVelocity = 0f;
 			}
 		}
 	}
@@ -189,14 +195,6 @@ public class BuildingBlock : MonoBehaviour
 		else
 		{
 			Release();
-		}
-	}
-
-	void OnCollision2DEnter()
-	{
-		if(!hasCollided)
-		{
-			hasCollided = true;
 		}
 	}
 
