@@ -137,7 +137,6 @@ public class FindMatch : MonoBehaviour {
 			GameObject challengeFriendButtonInstance = Instantiate(ChallengeFriendButton, new Vector3(0,initialY,0), transform.rotation) as GameObject;
 			challengeFriendButtonInstance.transform.SetParent(GameObject.Find ("Friends").transform, false);
 			Text challengeFriendButtonText = challengeFriendButtonInstance.GetComponentInChildren<Text>();
-			//Set button text based on status
 			challengeFriendButtonText.text = "Challenge " + playerFriend["displayName"];
 
 			//Store match object and current opponentUserName on button
@@ -172,8 +171,7 @@ public class FindMatch : MonoBehaviour {
 	{
 		ChallengeFriendButtonScript cfbs = b.GetComponent<ChallengeFriendButtonScript>();
 		ParseUser playerChallenged = cfbs.opponent;
-		Debug.Log("challenging " + playerChallenged.Username );
-		Debug.Log("to be implemented");
+		Debug.Log("challenging " + playerChallenged.Username);
 		StartCoroutine("ChallengeFriend", playerChallenged);
 	}
 
@@ -183,6 +181,11 @@ public class FindMatch : MonoBehaviour {
 		StartCoroutine ("FindRandomMatch");
 	}
 
+	public void Button_SearchPlayer_Clicked()
+	{
+		Application.LoadLevel("SearchPlayer");
+	}
+	
 	public void Button_Back_Clicked()
 	{
 		Application.LoadLevel ("MyMatches");
