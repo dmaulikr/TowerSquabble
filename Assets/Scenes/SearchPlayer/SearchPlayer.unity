@@ -115,7 +115,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2043602737}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
   m_AnchoredPosition: {x: 0, y: -990}
@@ -254,7 +254,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22426214, guid: e46e9bba5712049b4b2678afa04ae2a2, type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 22426214, guid: e46e9bba5712049b4b2678afa04ae2a2, type: 2}
       propertyPath: m_AnchoredPosition.x
@@ -373,7 +373,7 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e46e9bba5712049b4b2678afa04ae2a2, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &122551963
+--- !u!224 &122551963 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 22426214, guid: e46e9bba5712049b4b2678afa04ae2a2,
     type: 2}
@@ -484,39 +484,39 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 53545965f3e064e1caee2026e8bd8680, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &152873916
+--- !u!224 &152873916 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 22489712, guid: 53545965f3e064e1caee2026e8bd8680,
     type: 2}
   m_PrefabInternal: {fileID: 152873915}
---- !u!224 &152873917
+--- !u!224 &152873917 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 22457174, guid: 53545965f3e064e1caee2026e8bd8680,
     type: 2}
   m_PrefabInternal: {fileID: 152873915}
---- !u!224 &152873918
+--- !u!224 &152873918 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 22426268, guid: 53545965f3e064e1caee2026e8bd8680,
     type: 2}
   m_PrefabInternal: {fileID: 152873915}
---- !u!224 &152873919
+--- !u!224 &152873919 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 22460032, guid: 53545965f3e064e1caee2026e8bd8680,
     type: 2}
   m_PrefabInternal: {fileID: 152873915}
---- !u!1 &152873920
+--- !u!1 &152873920 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 110412, guid: 53545965f3e064e1caee2026e8bd8680, type: 2}
   m_PrefabInternal: {fileID: 152873915}
---- !u!1 &152873921
+--- !u!1 &152873921 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 174548, guid: 53545965f3e064e1caee2026e8bd8680, type: 2}
   m_PrefabInternal: {fileID: 152873915}
---- !u!1 &152873922
+--- !u!1 &152873922 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 103640, guid: 53545965f3e064e1caee2026e8bd8680, type: 2}
   m_PrefabInternal: {fileID: 152873915}
---- !u!1 &152873923
+--- !u!1 &152873923 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 140180, guid: 53545965f3e064e1caee2026e8bd8680, type: 2}
   m_PrefabInternal: {fileID: 152873915}
@@ -796,7 +796,7 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7043e86a4749845479ddc0389014356e, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &847882103
+--- !u!224 &847882103 stripped
 RectTransform:
   m_PrefabParentObject: {fileID: 22434416, guid: 7043e86a4749845479ddc0389014356e,
     type: 2}
@@ -899,7 +899,7 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7d2394061433d4d95b731886334a8875, type: 2}
   m_IsPrefabParent: 0
---- !u!114 &958398813
+--- !u!114 &958398813 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 11426214, guid: e46e9bba5712049b4b2678afa04ae2a2,
     type: 2}
@@ -1077,7 +1077,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2043602737}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_AnchorMin: {x: .5, y: .5}
   m_AnchorMax: {x: .5, y: .5}
   m_AnchoredPosition: {x: 0, y: 28}
@@ -1247,7 +1247,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2043602737}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_AnchorMin: {x: .5, y: 1}
   m_AnchorMax: {x: .5, y: 1}
   m_AnchoredPosition: {x: -400.000031, y: -190}
@@ -1685,10 +1685,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1289255415}
   - {fileID: 11889979}
   - {fileID: 122551963}
   - {fileID: 1120890738}
+  - {fileID: 1289255415}
   m_Father: {fileID: 1265031385}
   m_RootOrder: 0
   m_AnchorMin: {x: .5, y: 1}
