@@ -89,16 +89,16 @@ public class MatchManager : MonoBehaviour {
 		// Loop through the rigidbodies of all the building blocks and check their velocity
 		foreach(GameObject g in buildingBlocks)
 		{
-			if(!MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.x, 0.0f, 0.001f) || 
-			   !MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.y, 0.0f, 0.001f))
+			if(!MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.x, 0.0f, 0.01f) || 
+			   !MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.y, 0.0f, 0.01f))
 			{
 				areAllBuildingBlocksStill = false;
 				// Check if sway timer has passed max time
 				if(Time.time > (swayTimerStarted + swayMaxWaitTime)) 
 				{
 					// Check velocity: if large, do not set it to 0
-					if((g.GetComponent<Rigidbody2D>().velocity.x > 0.1f || g.GetComponent<Rigidbody2D>().velocity.x < -0.1f) ||
-					   (g.GetComponent<Rigidbody2D>().velocity.y > 0.1f || g.GetComponent<Rigidbody2D>().velocity.y < -0.1f))
+					if((g.GetComponent<Rigidbody2D>().velocity.x > 0.001f || g.GetComponent<Rigidbody2D>().velocity.x < -0.001f) ||
+					   (g.GetComponent<Rigidbody2D>().velocity.y > 0.001f || g.GetComponent<Rigidbody2D>().velocity.y < -0.001f))
 					{
 						continue; // Skip this building block
 					}
@@ -165,7 +165,6 @@ public class MatchManager : MonoBehaviour {
 				myTurn = true;
 			}
 
-			// Note: result should be ordered by index (ascending)
 			List<GameObject> newBuildingBlocksList = new List<GameObject>();
 			foreach(var item in result)
 			{
@@ -182,23 +181,21 @@ public class MatchManager : MonoBehaviour {
 				// Set building block to released (not swinging)
 				newBuildingBlockScript.isHeldAtStart = false;
 				newBuildingBlocksList.Add(newBuildingBlockScript.gameObject);
-				// Set velocity to 0
-				Rigidbody2D rb = newBuildingBlock.GetComponentsInChildren<Rigidbody2D>()[1];
-				rb.velocity = Vector2.zero;
-				rb.angularVelocity = 0.0f;
-				rb.isKinematic = false;
-				rb.Sleep();
 				nextBuildingBlockIndex++; // Add to next building block index so that we know the index for the next building block we place in the scene
 				yield return new WaitForSeconds(.01f);
-				foreach(GameObject go in newBuildingBlocksList)
+				int ctr = 0, listLength = newBuildingBlocksList.Count;
+				while(ctr < listLength)
 				{
-					//Debug.Log (go.GetComponent<Rigidbody2D>().velocity.y);
-					while(!MathUtilities.IsApproximately(go.GetComponent<Rigidbody2D>().velocity.x, 0.0f) || 
-					      !MathUtilities.IsApproximately(go.GetComponent<Rigidbody2D>().velocity.y, 0.0f) ||
-					      Mathf.Abs(go.GetComponent<Rigidbody2D>().angularVelocity) > 0.000000001f)
+					while(!MathUtilities.IsApproximately(newBuildingBlocksList[ctr].GetComponent<Rigidbody2D>().velocity.x, 0.0f) || 
+					      !MathUtilities.IsApproximately(newBuildingBlocksList[ctr].GetComponent<Rigidbody2D>().velocity.y, 0.0f) ||
+					      !MathUtilities.IsApproximately(newBuildingBlocksList[ctr].GetComponent<Rigidbody2D>().angularVelocity, 0.0f))
 					{
+						// Break from coroutine and reset ctr in order to start over looping all the building blocks
 						yield return null;
+						ctr = 0;
+						continue;
 					}
+					ctr++;
 				}
 			}
 			Time.timeScale = 1f;

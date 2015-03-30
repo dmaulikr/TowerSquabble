@@ -9,7 +9,7 @@ public static class MathUtilities
 	 */
 	public static bool IsApproximately(float a, float b) 
 	{
-		var tolerance = 0.000001f;
+		var tolerance = 0.0000001f;
 		return Mathf.Abs(a - b) < tolerance;
 	}
 
