@@ -25,6 +25,27 @@ public class ParseBuildingBlock : ParseObject
 		get { return GetProperty<string>("matchId"); }
 		set { SetProperty<string>(value, "matchId"); }
 	}
+	
+	[ParseFieldName ("originalPosX")]
+	public float originalPosX
+	{
+		get { return GetProperty<float>("originalPosX"); }
+		set { SetProperty<float>(value, "originalPosX"); }
+	}
+	
+	[ParseFieldName ("originalPosY")]
+	public float originalPosY
+	{
+		get { return GetProperty<float>("originalPosY"); }
+		set { SetProperty<float>(value, "originalPosY"); }
+	}
+	
+	[ParseFieldName ("originalRotZ")]
+	public float originalRotZ
+	{
+		get { return GetProperty<float>("originalRotZ"); }
+		set { SetProperty<float>(value, "originalRotZ"); }
+	}
 
 	[ParseFieldName ("posX")]
 	public float posX

@@ -41,6 +41,10 @@ public class Login : MonoBehaviour {
 		var user = ParseUser.LogInAsync (parms[0].ToString(), parms[1].ToString());
 
 		while (!user.IsCompleted) yield return null;
+		if (user.IsCanceled || user.IsFaulted) {
+			Debug.Log(user.Exception.InnerExceptions[0]);
+			StatusText.text = user.Exception.InnerExceptions[0].ToString();
+		}
 		if (ParseUser.CurrentUser != null) {
 			AppModel.LoginWithUser(ParseUser.CurrentUser);
 		} else {

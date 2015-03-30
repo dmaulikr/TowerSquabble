@@ -9,6 +9,10 @@ public class BuildingBlock : MonoBehaviour
 	public ParseBuildingBlock.Type buildingBlockType;
 	// An index that keeps track of the order of when blocks were put in the scene (do not modify in this script)
 	public int index = 0;
+	//original release position
+	public float originalPosX;
+	public float originalPosY;
+	public float originalRotZ;
 
 	// Flashing particle ring
 	public GameObject flashingRing;

@@ -174,6 +174,10 @@ public class BuildingBlockButton : MonoBehaviour {
 			// Handle building block index
 			int buildingBlockIndex = matchManager.GetNextBuildingBlockIndex();
 			buildingBlockInstance.GetComponentsInChildren<BuildingBlock>()[0].index = buildingBlockIndex;
+			// Store the original position
+			buildingBlockInstance.GetComponentsInChildren<BuildingBlock>()[0].originalPosX = buildingBlockInstance.transform.position.x;
+			buildingBlockInstance.GetComponentsInChildren<BuildingBlock>()[0].originalPosY = buildingBlockInstance.transform.position.y;
+			buildingBlockInstance.GetComponentsInChildren<BuildingBlock>()[0].originalRotZ = buildingBlockInstance.transform.rotation.eulerAngles.z;
 			// Release building block
 			buildingBlockInstance.GetComponentsInChildren<BuildingBlock>()[0].SetIsReleased(true);
 			buildingBlockInstance = null;

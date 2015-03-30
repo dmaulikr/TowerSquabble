@@ -169,8 +169,6 @@ public class MatchManager : MonoBehaviour {
 				refreshImage.transform.parent.gameObject.SetActive(false);
 			}
 
-			// List of all instantiated building blocks
-			List<GameObject> instantiatedBuildingBlocks = new List<GameObject>();
 			// Note: result should be ordered by index (ascending)
 			List<GameObject> newBuildingBlocksList = new List<GameObject>();
 			foreach(var item in result)
@@ -236,6 +234,7 @@ public class MatchManager : MonoBehaviour {
 						block.posX = gameObjectBlock.transform.position.x;
 						block.posY = gameObjectBlock.transform.position.y;
 						block.rotZ = gameObjectBlock.transform.rotation.eulerAngles.z;
+
 						block.SaveAsync().ContinueWith(t => {
 						});
 					}
@@ -248,6 +247,9 @@ public class MatchManager : MonoBehaviour {
 			//add the block as a new item
 			ParseBuildingBlock newBlock = new ParseBuildingBlock ();
 			newBlock.matchId = AppModel.currentMatch.ObjectId;
+			newBlock.originalPosX = gameObjectBlock.GetComponent<BuildingBlock>().originalPosX;
+			newBlock.originalPosY = gameObjectBlock.GetComponent<BuildingBlock>().originalPosY;
+			newBlock.originalRotZ = gameObjectBlock.GetComponent<BuildingBlock>().originalRotZ;
 			newBlock.posX = gameObjectBlock.transform.position.x;
 			newBlock.posY = gameObjectBlock.transform.position.y;
 			newBlock.rotZ = gameObjectBlock.transform.rotation.eulerAngles.z;
