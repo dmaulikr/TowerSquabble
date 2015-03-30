@@ -173,9 +173,9 @@ public class MatchManager : MonoBehaviour {
 				ParseBuildingBlock pb = item as ParseBuildingBlock;
 				Quaternion rotation = Quaternion.identity;
 				Vector3 eulerAngles = rotation.eulerAngles;
-				eulerAngles.z = pb.rotZ;
+				eulerAngles.z = pb.originalRotZ;
 				rotation.eulerAngles = eulerAngles;
-				GameObject newBuildingBlock = Instantiate (buildingBlocks[(int) pb.GetBuildingBlockType()], new Vector3(pb.posX, pb.posY, -1f), rotation) as GameObject; 
+				GameObject newBuildingBlock = Instantiate (buildingBlocks[(int) pb.GetBuildingBlockType()], new Vector3(pb.originalPosX, pb.originalPosY, -1f), rotation) as GameObject; 
 				//Store Parse Object ID in prefab class
 				BuildingBlock newBuildingBlockScript = newBuildingBlock.GetComponentInChildren<BuildingBlock>();
 				newBuildingBlockScript.objectId = pb.ObjectId;
