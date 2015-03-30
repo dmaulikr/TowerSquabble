@@ -20,8 +20,6 @@ public class BuildingBlock : MonoBehaviour
 	private bool notReleasedAndTouchingCollider = true;
 	// Is this building block held at start or not (default to true)
 	public bool isHeldAtStart = true;
-	// Has the building block collided with any other collider?
-	private bool hasCollided = false;
 
 	// Swing varibles
 	public float swingTime = 1.5F;
@@ -30,8 +28,10 @@ public class BuildingBlock : MonoBehaviour
 	// Varible telling us if the building block should swing or not (at all)
 	public bool shouldSwing = false;
 
+	// Refrence to the level manager
+	private MatchManager matchManager;
+
 	// Accessors
-	public bool HasCollided { get { return hasCollided; } set { hasCollided = value; } }
 	public bool NotReleasedAndTouchingCollider { get { return notReleasedAndTouchingCollider; } set { notReleasedAndTouchingCollider = value; } }
 
 	private void Release()
@@ -116,58 +116,12 @@ public class BuildingBlock : MonoBehaviour
 		}
 	}
 
-	void OnCollisionEnter2D(Collision2D collision)
-	{
-		if(!hasCollided)
-		{
-			hasCollided = true;
-			// Notify the match manager
-			
-		}
-
-		// Try to damp impact of collision
-		if(collision.gameObject.tag == "BuildingBlock")
-		{
-			float minForce = 10f;
-			float decreaseVelocityBy = 2f;
-			float otherMass; // other object's mass
-			if (collision.rigidbody)
-				otherMass = collision.rigidbody.mass;
-			else 
-				otherMass = 1000; // static collider means huge mass
-			Vector2 force = collision.relativeVelocity * otherMass;
-			if(Mathf.Abs(force.x) < minForce || Mathf.Abs(force.y) < minForce)
-			{
-				Vector2 velo = gameObject.GetComponent<Rigidbody2D>().velocity;
-				if(velo.x > 0f)
-				{
-					float newVel = Mathf.Clamp(velo.x - decreaseVelocityBy, 0f, 100000f);
-					velo.x = newVel;
-				}
-				else
-				{
-					float newVel = Mathf.Clamp(velo.x + decreaseVelocityBy, -100000f, 0f);
-					velo.x = newVel;
-				}
-
-				if(velo.y > 0f)
-				{
-					float newVel = Mathf.Clamp(velo.y - decreaseVelocityBy, 0f, 100000f);
-					velo.y = newVel;
-				}
-				else
-				{
-					float newVel = Mathf.Clamp(velo.y + decreaseVelocityBy, -100000f, 0f);
-					velo.y = newVel;
-				}
-				gameObject.GetComponent<Rigidbody2D>().velocity = velo;
-			}
-		}
-	}
-
 	// Use this for initialization
 	void Start () 
 	{
+		// Find the match manager and make the reference point to it
+		matchManager = GameObject.Find("MatchManager").GetComponent<MatchManager>();
+
 		if(isHeldAtStart)
 		{
 			SetGravityScale(0F);
@@ -195,14 +149,6 @@ public class BuildingBlock : MonoBehaviour
 		else
 		{
 			Release();
-		}
-	}
-
-	void FixedUpdate()
-	{
-		if(GetComponent<Rigidbody2D>().velocity.magnitude < .001f && GetComponent<Rigidbody2D>().angularVelocity < .001f && hasCollided)
-		{
-			GetComponent<Rigidbody2D>().Sleep();
 		}
 	}
 

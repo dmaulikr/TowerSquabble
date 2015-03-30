@@ -42,10 +42,16 @@ public class MatchManager : MonoBehaviour {
 	// Is user interacting with GUI?
 	public bool isUserInteractingWithGUI = false;
 
+	// Has first building block collided with another building block?
+	private bool hasBuildingBlockCollided = false;
+
 	// Add stuff here that is going to be initalized/reseted
 	// when scene is loaded or when it is the logged in player's turn again
 	private void ResetSceneVaribles()
 	{
+		// Init building block collided flag
+		hasBuildingBlockCollided = false;
+		// Init timer flag
 		hasStartSwayTimerStarted = false;
 		// Init game over varible
 		gameOver = false;
@@ -88,8 +94,8 @@ public class MatchManager : MonoBehaviour {
 		// Loop through the rigidbodies of all the building blocks and check their velocity
 		foreach(GameObject g in buildingBlocks)
 		{
-			if(!MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.x,0.0f) || 
-			   !MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.y,0.0f))
+			if(!MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.x, 0.0f, 0.001f) || 
+			   !MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.y, 0.0f, 0.001f))
 			{
 				areAllBuildingBlocksStill = false;
 				// Check if sway timer has passed max time
@@ -106,6 +112,11 @@ public class MatchManager : MonoBehaviour {
 					g.GetComponent<Rigidbody2D>().angularVelocity = 0f;
 					g.GetComponent<Rigidbody2D>().Sleep();
 				}
+			}
+			else 
+			{
+				// Set building blocks that are approximatley still to sleep
+				g.GetComponent<Rigidbody2D>().Sleep();
 			}
 		}
 
@@ -141,6 +152,7 @@ public class MatchManager : MonoBehaviour {
 		// Safety check!
 		if(result != null)
 		{
+			Time.timeScale = 30f;
 			// Check whos turn it is
 			ParseUser playerTurn = AppModel.currentMatch["playerTurn"] as ParseUser;
 			if(!playerTurn.ObjectId.Equals(ParseUser.CurrentUser.ObjectId)) 
@@ -157,6 +169,8 @@ public class MatchManager : MonoBehaviour {
 				refreshImage.transform.parent.gameObject.SetActive(false);
 			}
 
+			// List of all instantiated building blocks
+			List<GameObject> instantiatedBuildingBlocks = new List<GameObject>();
 			// Note: result should be ordered by index (ascending)
 			List<GameObject> newBuildingBlocksList = new List<GameObject>();
 			foreach(var item in result)
@@ -173,20 +187,27 @@ public class MatchManager : MonoBehaviour {
 				newBuildingBlockScript.objectId = pb.ObjectId;
 				// Set building block to released (not swinging)
 				newBuildingBlockScript.isHeldAtStart = false;
-				newBuildingBlockScript.HasCollided = true;
 				newBuildingBlocksList.Add(newBuildingBlockScript.gameObject);
 				// Set velocity to 0
-				newBuildingBlock.GetComponentsInChildren<Rigidbody2D>()[1].velocity = Vector2.zero;
-				newBuildingBlock.GetComponentsInChildren<Rigidbody2D>()[1].angularVelocity = 0.0f;
-				newBuildingBlock.GetComponentsInChildren<Rigidbody2D>()[1].isKinematic = true;
+				Rigidbody2D rb = newBuildingBlock.GetComponentsInChildren<Rigidbody2D>()[1];
+				rb.velocity = Vector2.zero;
+				rb.angularVelocity = 0.0f;
+				rb.isKinematic = false;
+				rb.Sleep();
 				nextBuildingBlockIndex++; // Add to next building block index so that we know the index for the next building block we place in the scene
-				//EditorApplication.isPaused = true;
+				yield return new WaitForSeconds(.01f);
+				foreach(GameObject go in newBuildingBlocksList)
+				{
+					//Debug.Log (go.GetComponent<Rigidbody2D>().velocity.y);
+					while(!MathUtilities.IsApproximately(go.GetComponent<Rigidbody2D>().velocity.x, 0.0f) || 
+					      !MathUtilities.IsApproximately(go.GetComponent<Rigidbody2D>().velocity.y, 0.0f) ||
+					      Mathf.Abs(go.GetComponent<Rigidbody2D>().angularVelocity) > 0.000000001f)
+					{
+						yield return null;
+					}
+				}
 			}
-			foreach(GameObject go in newBuildingBlocksList)
-			{
-				go.GetComponent<Rigidbody2D>().isKinematic = false;
-				yield return null;
-			}
+			Time.timeScale = 1f;
 		}
 	}
 
@@ -336,7 +357,7 @@ public class MatchManager : MonoBehaviour {
 			switchUserButton.enabled = true;
 		}
 
-		ResetSceneVaribles ();
+		ResetSceneVaribles();
 		// Create the scene
 		StartCoroutine("GetBlocksFromParse"); // From parse
 	}
