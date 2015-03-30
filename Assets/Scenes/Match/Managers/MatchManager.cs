@@ -269,6 +269,7 @@ public class MatchManager : MonoBehaviour {
 		{
 			headerText.text = "Waiting for " + AppModel.currentOpponent["displayName"].ToString();
 			refreshImage.gameObject.SetActive(true);
+			refreshImage.transform.parent.gameObject.SetActive(true);
 		}
 
 		// Activate back button

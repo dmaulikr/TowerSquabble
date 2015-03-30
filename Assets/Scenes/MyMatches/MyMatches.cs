@@ -156,7 +156,10 @@ public class MyMatches : MonoBehaviour {
 		//merge the two results
 		results = results.Concat(find.Result);
 		//sort the results by status
-		results = results.Where(x => x["status"].ToString() == "waiting").Concat (results.Where(x => x["status"].ToString() == "challenging")).Concat(results.Where(x => x["status"].ToString() == "active")).Concat(results.Where(x => x["status"].ToString() == "finished"));
+		results = results.Where(x => x["status"].ToString() == "waiting").Concat (results.Where(x => x["status"].ToString() == "challenging"))
+			.Concat(results.Where(x => x["status"].ToString() == "active" && (x["playerTurn"] as ParseUser).ObjectId.Equals(ParseUser.CurrentUser.ObjectId)))
+			.Concat(results.Where(x => x["status"].ToString() == "active" && !(x["playerTurn"] as ParseUser).ObjectId.Equals(ParseUser.CurrentUser.ObjectId)))
+			.Concat(results.Where(x => x["status"].ToString() == "finished"));
 
 		//reset variables for these results
 		refreshing = false;
