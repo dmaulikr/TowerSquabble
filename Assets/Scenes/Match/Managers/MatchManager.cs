@@ -89,8 +89,8 @@ public class MatchManager : MonoBehaviour {
 		// Loop through the rigidbodies of all the building blocks and check their velocity
 		foreach(GameObject g in buildingBlocks)
 		{
-			if(!MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.x, 0.0f, 0.001f) || 
-			   !MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.y, 0.0f, 0.001f))
+			if(!MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.x, 0.0f, 0.01f) || 
+			   !MathUtilities.IsApproximately(g.GetComponent<Rigidbody2D>().velocity.y, 0.0f, 0.01f))
 			{
 				areAllBuildingBlocksStill = false;
 				// Check if sway timer has passed max time
@@ -272,6 +272,7 @@ public class MatchManager : MonoBehaviour {
 		{
 			headerText.text = "Waiting for " + AppModel.currentOpponent["displayName"].ToString();
 			refreshImage.gameObject.SetActive(true);
+			refreshImage.transform.parent.gameObject.SetActive(true);
 		}
 
 		// Activate back button
