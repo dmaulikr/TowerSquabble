@@ -42,15 +42,10 @@ public class MatchManager : MonoBehaviour {
 	// Is user interacting with GUI?
 	public bool isUserInteractingWithGUI = false;
 
-	// Has first building block collided with another building block?
-	private bool hasBuildingBlockCollided = false;
-
 	// Add stuff here that is going to be initalized/reseted
 	// when scene is loaded or when it is the logged in player's turn again
 	private void ResetSceneVaribles()
 	{
-		// Init building block collided flag
-		hasBuildingBlockCollided = false;
 		// Init timer flag
 		hasStartSwayTimerStarted = false;
 		// Init game over varible
@@ -155,6 +150,7 @@ public class MatchManager : MonoBehaviour {
 			Time.timeScale = 30f;
 			// Check whos turn it is
 			ParseUser playerTurn = AppModel.currentMatch["playerTurn"] as ParseUser;
+			bool myTurn = false;
 			if(!playerTurn.ObjectId.Equals(ParseUser.CurrentUser.ObjectId)) 
 			{
 				headerText.text = "Waiting for " + AppModel.currentOpponent["displayName"].ToString();
@@ -164,9 +160,9 @@ public class MatchManager : MonoBehaviour {
 			else
 			{
 				headerText.text = "Your turn against " + AppModel.currentOpponent["displayName"].ToString();
-				buildingBlockSlotMachine.GenerateNewBuildingBlocks();
 				refreshImage.gameObject.SetActive(false);
 				refreshImage.transform.parent.gameObject.SetActive(false);
+				myTurn = true;
 			}
 
 			// Note: result should be ordered by index (ascending)
@@ -206,6 +202,10 @@ public class MatchManager : MonoBehaviour {
 				}
 			}
 			Time.timeScale = 1f;
+			if(myTurn)
+			{
+				buildingBlockSlotMachine.GenerateNewBuildingBlocks();
+			}
 		}
 	}
 
